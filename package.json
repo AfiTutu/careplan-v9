@@ -1,0 +1,29 @@
+{
+  "name": "careplan-specialcare-cloudflare",
+  "version": "9.8.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev public --binding APP_ENV=local --binding TEAM_DOMAIN=https://local.invalid --binding POLICY_AUD=local-development --binding ALLOW_LOCAL_DEV=true --binding LOCAL_DEV_EMAIL=developer@local.invalid --binding DATA_ENCRYPTION_KEY_ID=local-primary",
+    "check": "node scripts/qa-static.mjs && vitest run",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "deploy": "wrangler pages deploy public",
+    "build:functions": "wrangler pages functions build functions --outfile .qa-worker.js",
+    "qa": "npm run check && npm run test:e2e && npm run build:functions",
+    "deploy:verify": "node scripts/verify-deploy-config.mjs",
+    "deploy:production": "wrangler pages deploy public"
+  },
+  "dependencies": {
+    "jose": "6.2.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "vitest": "4.1.9",
+    "wrangler": "4.106.0"
+  },
+  "engines": {
+    "node": ">=20 <23"
+  },
+  "description": "Mobile-first private care planning PWA for Cloudflare Pages, D1, R2 and Access."
+}

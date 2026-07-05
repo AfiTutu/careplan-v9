@@ -1,0 +1,14 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+*.careplan
+*.json.backup
+*.sqlite
+.DS_Store
+.qa-worker.js
+coverage/

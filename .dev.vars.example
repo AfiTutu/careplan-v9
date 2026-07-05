@@ -1,0 +1,2 @@
+# Local development only. Generate with: openssl rand -base64 32
+DATA_ENCRYPTION_KEY=REPLACE_WITH_LOCAL_BASE64_32_BYTE_KEY

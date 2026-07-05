@@ -1,0 +1,35 @@
+CarePlan · Specialcare v9.8 — QA evidence summary
+Date: 2026-07-03
+
+npm run check
+- Static QA: PASS
+- Vitest: 8/8 PASS
+
+npm run test:e2e
+- Playwright Chromium: 6/6 PASS
+
+npm run build:functions
+- Wrangler Pages Functions compile: PASS
+
+npm audit --omit=dev
+- 0 known vulnerabilities
+
+Local Wrangler API/D1/R2
+- owner session 200
+- workspace create 201
+- workspace read 200
+- ETag update 200
+- stale write 412
+- cross-origin write 403
+- invalid media signature 415
+- valid media upload 201
+- original media round trip 200 and byte-identical
+- thumbnail round trip 200 and byte-identical
+- duplicate media ID 409
+- explicit replacement 201
+- viewer data write 403
+- viewer media upload 403
+- encrypted D1 plaintext search 0 matches
+- local encrypted media plaintext search 0 matches
+
+Production placeholder gate: PASS (deployment rejected until real D1, R2 and Access values are supplied)

@@ -1,0 +1,3 @@
+-- Run remotely after replacing all placeholders.
+INSERT INTO workspace_invites(workspace_slug,email,role,created_at,created_by)
+VALUES('family-one','customer@example.com','owner',datetime('now'),'admin@example.com');

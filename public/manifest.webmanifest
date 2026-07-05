@@ -1,0 +1,20 @@
+{
+  "name": "CarePlan · Specialcare",
+  "short_name": "CarePlan",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FAF6EF",
+  "theme_color": "#7B1C30",
+  "description": "Private mobile-first care planning, records, media and emergency handover workspace.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
