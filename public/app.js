@@ -809,8 +809,89 @@ v96Migrate();document.title='CarePlan · Specialcare';v94Render();
   function b64ToBytes(s){const x=atob(s),b=new Uint8Array(x.length);for(let i=0;i<x.length;i++)b[i]=x.charCodeAt(i);return b}
   async function backupKey(password,salt,iterations){const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',hash:'SHA-256',salt,iterations},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
   async function productionExportBackup(){const password=prompt('Create a backup password (minimum 12 characters). Keep it somewhere safe.');if(!password)return;if(password.length<12)return alert('Use at least 12 characters.');const confirmPassword=prompt('Re-enter the backup password.');if(password!==confirmPassword)return alert('Passwords do not match.');toast('Preparing encrypted backup…');const media=[];for(const ref of v95AllMediaRefs()){const rec=await v94GetMedia(ref.id);if(rec?.blob)media.push({id:ref.id,name:rec.name,type:rec.type,kind:rec.kind,data:await v95BlobDataUrl(rec.blob)})}const payload=JSON.stringify({format:'careplan-complete-workspace',version:98,exportedAt:new Date().toISOString(),workspace:state,media}),salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),iterations=310000,key=await backupKey(password,salt,iterations),cipher=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(payload))),wrapper={format:BACKUP_FORMAT,version:2,createdAt:new Date().toISOString(),kdf:{name:'PBKDF2',hash:'SHA-256',iterations,salt:bytesToB64(salt)},cipher:{name:'AES-GCM',iv:bytesToB64(iv)},ciphertext:bytesToB64(cipher)};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(wrapper)],{type:'application/vnd.careplan.encrypted+json'}));a.download=`careplan-${PAGE_SLUG}-${v94DateISO(new Date())}.careplan`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(`Encrypted backup downloaded · ${media.length} media file${media.length===1?'':'s'}`)}
-  async function productionImportBackup(file){try{const wrapper=JSON.parse(await file.text());if(wrapper.format!==BACKUP_FORMAT)throw new Error('This is not a CarePlan encrypted backup.');const password=prompt('Enter the backup password.');if(!password)return;const salt=b64ToBytes(wrapper.kdf.salt),iv=b64ToBytes(wrapper.cipher.iv),key=await backupKey(password,salt,Number(wrapper.kdf.iterations)),plain=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,b64ToBytes(wrapper.ciphertext)),payload=JSON.parse(new TextDecoder().decode(plain));if(payload.format!=='careplan-complete-workspace')throw new Error('Unsupported backup content.');if(!confirm('Restore this complete workspace? Current records on this device will be replaced.'))return;for(const m of payload.media||[]){const blob=await (await fetch(m.data)).blob();await v94PutMedia({id:m.id,name:m.name,type:m.type,kind:m.kind,blob,replace:true})}state=merge(productionDefaultState(),payload.workspace||{});save();v94Render();await push();toast('Encrypted backup restored')}catch(err){console.error(err);alert('Backup restore failed. Check the file and password.')}}
-  v94Export=productionExportBackup;v94Import=productionImportBackup;
+  async function productionImportBackup(file){
+  try{
+    const data = JSON.parse(await file.text());
+
+    // Legacy plaintext CarePlan backup
+    if(data.app === 'careplan-pro'){
+      if(!confirm('Restore this legacy CarePlan backup? Current records on this device will be replaced.')){
+        return;
+      }
+
+      state = merge(productionDefaultState(), data);
+      save();
+      v94Render();
+      await push();
+
+      toast('Legacy backup restored');
+      return;
+    }
+
+    // Current encrypted CarePlan backup
+    if(data.format !== BACKUP_FORMAT){
+      throw new Error('Unsupported CarePlan backup format.');
+    }
+
+    const password = prompt('Enter the backup password.');
+    if(!password){
+      return;
+    }
+
+    const salt = b64ToBytes(data.kdf.salt);
+    const iv = b64ToBytes(data.cipher.iv);
+
+    const key = await backupKey(
+      password,
+      salt,
+      Number(data.kdf.iterations)
+    );
+
+    const plain = await crypto.subtle.decrypt(
+      {name:'AES-GCM',iv},
+      key,
+      b64ToBytes(data.ciphertext)
+    );
+
+    const payload = JSON.parse(
+      new TextDecoder().decode(plain)
+    );
+
+    if(payload.format !== 'careplan-complete-workspace'){
+      throw new Error('Unsupported backup content.');
+    }
+
+    if(!confirm('Restore this complete workspace? Current records on this device will be replaced.')){
+      return;
+    }
+
+    for(const m of payload.media || []){
+      const blob = await (await fetch(m.data)).blob();
+
+      await v94PutMedia({
+        id:m.id,
+        name:m.name,
+        type:m.type,
+        kind:m.kind,
+        blob,
+        replace:true
+      });
+    }
+
+    state = merge(productionDefaultState(), payload.workspace || {});
+    save();
+    v94Render();
+    await push();
+
+    toast('Encrypted backup restored');
+  }catch(err){
+    console.error(err);
+    alert('Backup restore failed. The backup file is invalid or the password is incorrect.');
+  }
+}
+
+v94Export=productionExportBackup;
+v94Import=productionImportBackup;
 
   window.addEventListener('online',()=>pull());window.addEventListener('offline',()=>status('offline'));
   if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(err=>console.warn('service_worker_registration_failed',err));
