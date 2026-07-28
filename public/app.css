@@ -232,3 +232,10 @@ html,body{height:100%;overflow:hidden}.app{max-width:1600px;width:100%;height:10
 #sosScroll .contact-row>a{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:36px!important;max-width:150px!important;padding:7px 10px!important;border-radius:11px!important;background:var(--maroonp)!important;color:var(--maroon)!important;font-size:9px!important;font-weight:700!important;text-decoration:none!important;text-align:center!important;overflow-wrap:anywhere!important}
 .v98-link-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px}.v98-delete-link{color:var(--red)!important;background:var(--redp)!important;border-color:rgba(180,35,47,.18)!important}
 @media(max-width:420px){#sosScroll .contact-row{grid-template-columns:38px minmax(0,1fr)!important}#sosScroll .contact-row>a{grid-column:2;justify-self:start;max-width:100%!important}}
+
+/* v9.9 local-first release startup guard */
+body:not(.app-ready) .app{visibility:hidden}
+.startup-error{max-width:560px;margin:12vh auto;padding:28px;background:#fff;border:1px solid var(--ivory3);border-radius:22px;box-shadow:var(--shadow);font-family:Arial,sans-serif;color:var(--ink)}
+.startup-error h1{font-family:'Cormorant Garamond',serif;color:var(--maroon);font-size:34px;margin:0 0 12px}
+.startup-error p{line-height:1.6;color:var(--muted)}
+.startup-error button{margin-top:16px;border:0;border-radius:12px;padding:12px 18px;background:var(--maroon);color:#fff;font-weight:700}

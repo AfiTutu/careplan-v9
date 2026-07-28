@@ -1,5 +1,5 @@
-const CACHE_NAME = 'careplan-specialcare-shell-v9.8.0';
-const SHELL = ['/app.css', '/app.js', '/icon.svg'];
+const CACHE_NAME = 'careplan-specialcare-shell-v9.9.0-local';
+const SHELL = ['/bootstrap.js', '/app.css', '/app.js', '/icon.svg'];
 const SHELL_DOCUMENT = '/__careplan_app_shell__';
 
 self.addEventListener('install', event => {
@@ -42,10 +42,10 @@ self.addEventListener('fetch', event => {
   }
 
   if (SHELL.includes(url.pathname)) {
-    event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => {
+    event.respondWith(fetch(request).then(response => {
       const copy = response.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
       return response;
-    })));
+    }).catch(() => caches.match(request)));
   }
 });
