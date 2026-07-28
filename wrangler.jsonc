@@ -7,7 +7,7 @@
     {
       "binding": "CAREPLAN_DB",
       "database_name": "careplan-specialcare-production",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "cb122a58-fd93-4498-b292-27bc736c9ec0",
       "migrations_dir": "migrations"
     }
   ],
