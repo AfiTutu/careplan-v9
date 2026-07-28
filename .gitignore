@@ -12,3 +12,11 @@ test-results/
 .DS_Store
 .qa-worker.js
 coverage/
+
+# Local onboarding backups
+backup-onboarding-*/
+before-onboarding-*/
+before-onboarding-launcher-fix-*/
+before-parametric-onboarding-*/
+before-safe-onboarding-*/
+CarePlan-current-onboarding-files.zip

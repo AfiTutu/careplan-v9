@@ -8,7 +8,9 @@
 <meta content="noindex,nofollow,noarchive" name="robots"/>
 <title>CarePlan · Specialcare</title>
 
-<link id="app-manifest" rel="manifest" href="/manifest.webmanifest"/><link href="/icon.svg" rel="icon" type="image/svg+xml"/><link href="/app.css" rel="stylesheet"/></head>
+<link id="app-manifest" rel="manifest" href="/manifest.webmanifest"/><link href="/icon.svg" rel="icon" type="image/svg+xml"/><link href="/app.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/onboarding/onboarding.css">
+</head>
 <body data-app-version="9.9.0-local">
 <script defer src="/bootstrap.js"></script>
 <div class="app" id="app">
@@ -38,5 +40,11 @@
 
 
 
-<script defer src="/app.js"></script></body>
+<script defer src="/app.js"></script>
+  <script src="/onboarding/tour-config.js" defer></script>
+  <script src="/onboarding/careplan-adapter.js" defer></script>
+  <script src="/onboarding/tour-engine.js" defer></script>
+  <script src="/onboarding/tour-bootstrap.js" defer></script>
+  <script src="/onboarding/onboarding.js" defer></script>
+</body>
 </html>
